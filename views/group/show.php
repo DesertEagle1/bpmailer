@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 $this->title = 'Prehľad skupiny | BP Mailer';
 ?>
@@ -11,21 +11,23 @@ $this->title = 'Prehľad skupiny | BP Mailer';
     <h1>Prehľad skupiny</h1>
 
     <div class="container">
+    	<div class="row">
     	<?php
-            $formInput = ActiveForm::begin([
+            $form = ActiveForm::begin([
                 'id' => 'subscriberFromInput-form',
                 'options' => ['class' => 'col-md-4'],
                             ]) ?>
 
 				<div class="form-group">
-					<?= $formInput->field($fromInput, 'emailAddress') ?>
+					<?= $form->field($model, 'emailAddress') ?>
 				</div>
 
 				<div class="form-group">
 					<?= Html::submitButton('Pridať', ['class' => 'btn btn-primary', 'name' => 'subscriberFromInput-button']) ?>
 				</div>
         <?php ActiveForm::end() ?>
-
+        </div>
+        <div class="row">
         <?php
             $formImport = ActiveForm::begin([
                 'id' => 'subscribersFromFile-form',
@@ -33,11 +35,11 @@ $this->title = 'Prehľad skupiny | BP Mailer';
                             ]) ?>
 
 				<div class="form-group">
-					<?= $formImport->field($fromFile, 'importedFile')->fileInput() ?>
+					<?= $formImport->field($modelImport, 'importedFile')->fileInput() ?>
 				</div>
 
 				<div class="form-group">
-					<?= Html::submitButton('Pridať', ['class' => 'btn btn-primary', 'name' => 'subscribersFromFile-button']) ?>
+					<?= Html::submitButton('Importovať', ['class' => 'btn btn-primary', 'name' => 'subscribersFromFile-button']) ?>
 				</div>
         <?php ActiveForm::end() ?>
 
@@ -47,18 +49,17 @@ $this->title = 'Prehľad skupiny | BP Mailer';
                 'options' => ['class' => 'col-md-4'],
                             ]) ?>
 
-				<label class="control-label">Exportovať do súboru</label>
-				<div class="form-group">
-					<?= $formExport->field($exportToFile, 'exportToCSV')->radio() ?>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<?= $formExport->field($modelExport, 'exportFileFormat')->inline()->radioList($items) ?>
+						</div>
+					</div>
 				</div>
-
 				<div class="form-group">
-					<?= $formExport->field($exportToFile, 'exportToXML')->radio() ?>
-				</div>
-				<div class="form-group">
-					<?= Html::submitButton('Pridať', ['class' => 'btn btn-primary', 'name' => 'exportToFile-button']) ?>
+					<?= Html::submitButton('Exportovať', ['class' => 'btn btn-primary', 'name' => 'exportToFile-button']) ?>
 				</div>
         <?php ActiveForm::end() ?>
-
+        </div>
     </div>
 </div>

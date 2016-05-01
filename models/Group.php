@@ -34,6 +34,18 @@ class Group extends ActiveRecord
         return $result;
     }
 
+    public static function getGroupsWithIds(){
+        $groups = Group::find()
+            ->all();
+
+        $result = array();
+        foreach ($groups as $key => $value) {
+            $result[$value['id']] = $value['group_name'];
+        }
+
+        return $result;
+    }
+
 
 }
 

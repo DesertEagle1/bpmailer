@@ -10,7 +10,11 @@ use app\models\User;
 use app\models\Group;
 use app\models\AccessRights;
 use app\models\NewGroupForm;
-use app\models\SubscriberForm;
+use app\models\Subscriber;
+use app\models\SubscriberEmail;
+use app\models\SubscriberFormEmail;
+use app\models\SubscriberFormImport;
+use app\models\SubscriberFormExport;
 
 class GroupController extends Controller
 {
@@ -113,10 +117,29 @@ class GroupController extends Controller
         Yii::$app->view->params['accessRightsArray'] = $result;
 
         if (!empty(array_intersect([1,3], $result))) {
-            $fromInput = new SubscriberForm();
-            $fromFile = new SubscriberForm();
-            $exportToFile = new SubscriberForm();
-            return $this->render('show', array('fromInput'=>$fromInput, 'fromFile'=>$fromFile, 'exportToFile'=>$exportToFile));
+            $model = new SubscriberFormEmail();
+            $modelImport = new SubscriberFormImport();
+            $modelExport = new SubscriberFormExport();
+            $items = array('csv'=>'.CSV', 'xml'=>'.XML');
+
+            if ($model->load(Yii::$app->request->post()) && $model->validate()){
+                $subscriber = new SubscriberEmail();
+                if (!(SubscriberEmail::findByEmail($model->emailAddress))){
+                    $subscriber->email = $model->emailAddress;
+                    $subscriber->save();
+                }
+
+                if (Subscriber::emailInGroup($id, $model->emailAddress)){
+                    $emailId = SubscriberEmail::findByEmail($model->emailAddress);
+                    $subscriber = new Subscriber();
+                    $subscriber->group_id = $id;
+                    $subscriber->email_id = $emailId->id;
+                    $subscriber->save();
+                }
+            }
+
+            return $this->render('show', 
+                array('model'=>$model, 'modelImport'=>$modelImport, 'modelExport'=>$modelExport, 'items'=>$items));
         }
 
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));

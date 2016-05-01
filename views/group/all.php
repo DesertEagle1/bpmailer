@@ -43,5 +43,10 @@ $this->title = 'Prehľad skupín | BP Mailer';
       
       </table>
       <p class="text-left"><a class="btn btn-primary" href="?r=group%2Fnew" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Vytvoriť novú skupinu</a></p>
+    <?php
+    echo "<pre>";
+    print_r($groups);
+    echo "</pre>";
+    ?>
     </div>
 </div>

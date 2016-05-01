@@ -22,7 +22,10 @@ class NewsletterForm extends Model
     public function rules()
     {
         return [
-            [['subject', 'sentFrom', 'content'], 'required', 'message' => '{attribute} nesmie byť prázdny.'],
+            [['subject', 'sentFrom'], 'required', 'message' => '{attribute} nesmie byť prázdny.'],
+            ['content', 'required', 'message' => '{attribute} nesmie byť prázdne.'],
+            ['copyTo', 'string'],
+            ['copyTo', 'validateCopyTo'],
             [['receivers'], 'required', 'message' => 'Príjemcovia nesmú byť prázdni.'],
             [['replyTo', 'sentFrom'], 'email', 'message' => 'Zadajte platnú e-mailovú adresu.'],
         ];
@@ -38,7 +41,15 @@ class NewsletterForm extends Model
             'replyTo' => 'Odpovedať na',
             'template' => 'Šablóna',
             'content' => 'Telo správy',
-            'attachment' => 'Príloha',
         ];
+    }
+
+    public function validateCopyTo($attribute, $params){
+        $copyTo = explode(",", $this->$attribute);
+        foreach ($copyTo as $key => $value) {
+            if (!(filter_var($value, FILTER_VALIDATE_EMAIL))){
+                $this->addError($attribute, 'Našla sa neplatná adresa.');
+            }
+        }
     }
 }

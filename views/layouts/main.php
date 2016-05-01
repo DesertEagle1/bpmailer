@@ -51,8 +51,8 @@ AppAsset::register($this);
 
         $templateNavItems = ((in_array(4, $this->params['accessRightsArray'])) 
                             or (in_array(1, $this->params['accessRightsArray'])))? 
-                        [['label' => 'Vytvoriť novú šablónu', 'url' => '?r=site%2Fnewtemplate'],
-                        ['label' => 'Upraviť existujúce šablóny', 'url' => '?r=site%2Ftemplates']] : null; 
+                        [['label' => 'Vytvoriť novú šablónu', 'url' => '?r=template%2Fnew'],
+                        ['label' => 'Upraviť existujúce šablóny', 'url' => '?r=template%2Fall']] : null; 
 
         $navItems =  [
                 [

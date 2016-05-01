@@ -7,12 +7,11 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\User;
-use app\models\LoginForm;
-use app\models\NewsletterForm;
 use app\models\AccessRights;
-use app\models\ChangePasswordForm;
+use app\models\Template;
+use app\models\NewTemplateForm;
 
-class SiteController extends Controller
+class TemplateController extends Controller
 {
 
     public function behaviors()
@@ -51,24 +50,6 @@ class SiteController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-        else
-        {   
-            $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-            $result = array();
-            foreach ($rights as $key => $value) {
-                 $result[] = $rights[$key]['access_right_id'];
-             } 
-            Yii::$app->view->params['accessRightsArray'] = $result;
-            return $this->render('index', array('model'=>$model));
-        }
-    }
-
     /**
      * Logs out the current user.
      *
@@ -81,7 +62,7 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    public function actionChangepassword()
+    public function actionNew()
     {
         $rights = AccessRights::getAccessRights(Yii::$app->user->id);
         $result = array();
@@ -89,16 +70,34 @@ class SiteController extends Controller
              $result[] = $rights[$key]['access_right_id'];
          } 
         Yii::$app->view->params['accessRightsArray'] = $result;
-        
-        if (!\Yii::$app->user->isGuest){
-            $model = new ChangePasswordForm();
+
+        if (!empty(array_intersect([1,4], $result))) {
+            $model = new NewTemplateForm();
             if ($model->load(Yii::$app->request->post()) && $model->validate()){
-                $user = User::findOne(Yii::$app->user->identity->id);
-                $user->password_hash = Yii::$app->getSecurity()->generatePasswordHash($model->newPassword);
-                $user->update();
+                $template = new Template();
+                $template->template_name = $model->name;
+                $template->source_code = $model->sourceCode;
+                $template->save();
             }
-            return $this->render('changepassword', array('model'=>$model));
+            return $this->render('new', array('model' => $model));
         }
+
+        return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
+    }
+
+    public function actionAll()
+    {
+        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
+        $result = array();
+        foreach ($rights as $key => $value) {
+             $result[] = $rights[$key]['access_right_id'];
+         } 
+        Yii::$app->view->params['accessRightsArray'] = $result;
+
+        if (!empty(array_intersect([1,4], $result))) {
+            return $this->render('all', array());
+        }
+
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
     }
 }

@@ -28,11 +28,11 @@ $this->title = 'Nový newsletter | BP Mailer';
         </div>
 
         <div class="form-group">
-            <?= $form->field($model, 'receivers')->dropdownList(['Option 1', 'Option 2']) ?>
+            <?= $form->field($model, 'receivers')->dropdownList($groups,['prompt'=>'Vyberte skupinu odberateľov']) ?>
         </div>
 
         <div class="form-group">
-            <?= $form->field($model, 'copyTo') ?>
+            <?= $form->field($model, 'copyTo')->hint('Vložte platné e-mailové adresy oddelené čiarkou, napr: priklad1@mail.com,priklad2@mail.com') ?>
         </div>
 
         <div class="row">
@@ -50,7 +50,7 @@ $this->title = 'Nový newsletter | BP Mailer';
           </div>
 
           <div class="form-group">
-            <?= $form->field($model, 'template')->dropdownList(['Option 1', 'Option 2']) ?>
+            <?= $form->field($model, 'template')->dropdownList($templates,['prompt'=>'Vyberte šablónu']) ?>
           </div>
 
           <div class="form-group">
@@ -61,12 +61,25 @@ $this->title = 'Nový newsletter | BP Mailer';
           </div>
 
           <div class="form-group">
-            <?= $form->field($model, 'attachment')->fileInput() ?>
+            <?= $form->field($modelUpload, 'attachments[]')->fileInput(['multiple' => true]) ?>
           </div>  
 
         <div class="form-group">
             <?= Html::submitButton('Uložiť', ['class' => 'btn btn-primary', 'name' => 'saveNewsletter-button']) ?>
         </div>
         <?php ActiveForm::end() ?>
+        <?php
+        /*echo "<pre>";
+        print_r($sourceCodes);
+        echo "</pre>";*/
+        ?>
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+  $("#newsletterform-template").change(function() {
+    $("#newsletterform-content").val(<?php echo json_encode($sourceCodes[1]) ?>);
+  });
+</script>

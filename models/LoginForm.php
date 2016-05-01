@@ -24,11 +24,19 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password'], 'required'],
+            [['username', 'password'], 'required', 'message' => '{attribute} nesmie byť prázdne.'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
-            ['password', 'validatePassword'],
+            ['password', 'validatePassword', 'message' => 'Zadali ste nesprávne heslo.'],
+        ];
+    }
+
+    public function attributeLabels(){
+        return [
+                'username' => 'Prihlasovanie meno',
+                'password' => 'Heslo',
+                'rememberMe' => 'Pamätať si ma'
         ];
     }
 

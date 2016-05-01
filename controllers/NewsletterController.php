@@ -5,11 +5,15 @@ namespace app\controllers;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use app\models\User;
 use app\models\NewsletterForm;
 use app\models\Newsletter;
 use app\models\AccessRights;
+use app\models\Group;
+use app\models\Template;
+use app\models\UploadFiles;
 
 class NewsletterController extends Controller
 {
@@ -73,22 +77,35 @@ class NewsletterController extends Controller
 
         if (!empty(array_intersect([1,2], $result))) {
             $model = new NewsletterForm();
+            $modelUpload = new UploadFiles();
+            $groups = Group::getGroupsWithIds();
+            $templates = Template::getTemplatesWithIds();
+            $sourceCodes = Template::getSourceCodes();
+
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
                 $newsletter = new Newsletter();
                 $newsletter->subject = $model->subject;
                 $newsletter->sent_from = $model->sentFrom;
-                $newsletter->send_to_group = 1;
+                $newsletter->send_to_group = $model->receivers;
                 $newsletter->copy_to = $model->copyTo;
                 $newsletter->reply_to = $model->replyTo;
                 $newsletter->content = $model->content;
                 $newsletter->created_by = Yii::$app->user->id;
                 $newsletter->status = 1;
                 $newsletter->save();
+
+                $currentID = $newsletter->id;
+                $modelUpload->attachments = UploadedFile::getInstances($modelUpload, 'attachments');
+                if ($modelUpload->upload($currentID)) {
+                    // Success
+                }
             }
-            return $this->render('new', array('model' => $model));
+
+            return $this->render('new', array('model' => $model, 'modelUpload' => $modelUpload, 
+                                            'groups'=>$groups, 'templates'=>$templates, 'sourceCodes'=>$sourceCodes));
         }
 
-        return $this->render('index');
+        return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
     }
 
     public function actionAll()
@@ -100,7 +117,30 @@ class NewsletterController extends Controller
          } 
         Yii::$app->view->params['accessRightsArray'] = $result;
 
-        return $this->render('all');
+        if (!empty(array_intersect([1,2], $result))) {
+            $newsletters = Newsletter::getAllNewsletters();
+            return $this->render('all', array('newsletters' => $newsletters));
+        }
+
+        return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
+    }
+
+    public function actionShow($id)
+    {
+        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
+        $result = array();
+        foreach ($rights as $key => $value) {
+             $result[] = $rights[$key]['access_right_id'];
+         } 
+        Yii::$app->view->params['accessRightsArray'] = $result;
+
+        if (!empty(array_intersect([1,2], $result))) {
+
+            return $this->render('show', 
+                array());
+        }
+
+        return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
     }
 
 }

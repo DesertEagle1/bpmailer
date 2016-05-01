@@ -27,4 +27,17 @@ class Subscriber extends ActiveRecord
                 ->count();
         return $count;
     }
+
+    public static function emailInGroup($groupId, $email){
+        $emailRecord = SubscriberEmail::findByEmail($email);
+
+        $record = Subscriber::find()
+                ->where(['group_id' => $groupId, 'email_id' => $emailRecord->id])
+                ->one();
+
+        if ($record != null){
+            return false;
+        }
+        return true;
+    }
 }

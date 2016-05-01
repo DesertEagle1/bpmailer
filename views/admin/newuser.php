@@ -17,9 +17,10 @@ $this->title = 'Vytvorenie nového používateľa | BP Mailer';
         <?php $form = ActiveForm::begin([   
             'id' => 'newuser-form',
             'options' => ['class' => 'col-md-6'],
+
         ]); ?>
   
-            <?= $form->field($model, 'username') ?>       
+            <?= $form->field($model, 'username', ['enableAjaxValidation' => true]) ?>       
     
             <?= $form->field($model, 'password')->passwordInput() ?>
                     

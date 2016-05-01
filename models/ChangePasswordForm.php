@@ -18,8 +18,9 @@ class ChangePasswordForm extends Model
     {
         return [
             [['oldPassword','newPassword', 'newPasswordRepeat'], 'required', 'message'=>'{attribute} nesmie byť prázdne.'],
-            ['newPassword', 'compare', 'compareAttribute'=>'newPasswordRepeat', 'message'=>'Heslá sa musia zhodovať.'],
+            ['newPasswordRepeat', 'compare', 'compareAttribute'=>'newPassword', 'message'=>'Heslá sa musia zhodovať.'],
             [['newPassword','newPasswordRepeat'], 'string', 'min'=>5, 'tooShort'=>'Heslo musí obsahovať aspoň 5 znakov.'],
+            ['oldPassword','validatePassword', 'message'=>'Nesprávne heslo.']
         ];
     }
 
@@ -30,6 +31,15 @@ class ChangePasswordForm extends Model
             'newPassword' => 'Nové heslo',
             'newPasswordRepeat' => 'Nové heslo (zopakovať)'
         ];
+    }
+
+    public function validatePassword(){
+        $user = User::findIdentity(Yii::$app->user->identity->id);
+        
+        if (!$user || !$user->validatePassword($this->oldPassword)) {
+            return false;
+        }
+        return true;
     }
 
 }
