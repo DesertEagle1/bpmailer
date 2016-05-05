@@ -36,7 +36,7 @@ $this->title = 'Newslettere | BP Mailer';
           foreach ($newsletters as $key => $value) {
             echo "<tr>";
             echo "<td>" . $count . "</td>";
-            echo "<td>" . $value['subject'] . "</td>";
+            echo '<td><a href="?r=newsletter%2Fshow&id='. $value['id'] . '">' . $value['subject'] . "</a></td>";
             echo "<td>" . $value['status'] . "</td>";
             echo "<td>" . $value['created_at'] . "</td>";
             echo "<td>" . ($value['sent_at'] ? $value['sent_at'] : "N/A") . "</td>";
@@ -44,7 +44,12 @@ $this->title = 'Newslettere | BP Mailer';
             echo "<td>" . "N/A" . "</td>";
             echo "<td>" . "N/A" . "</td>";
             echo "<td>" . "N/A" . "</td>";
-            echo '<td><a class="btn btn-default" href="?r=newsletter%2Fshow&id=' . $value['id'] . '" role="button">Otvoriť</a></td>';
+            if ($value['status'] == 'Uložený'){
+              echo '<td><a class="btn btn-primary" href="?r=newsletter%2Fsend&id=' . $value['id'] . '" role="button">Odoslať</a></td>';
+            }
+            else {
+              echo '<td><a class="btn btn-default" href="?r=newsletter%2Fshow&id=' . $value['id'] . '" role="button">Otvoriť</a></td>';
+            }
             echo "<tr>";
             $count++;
           }

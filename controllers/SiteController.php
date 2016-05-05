@@ -8,7 +8,6 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\User;
 use app\models\LoginForm;
-use app\models\NewsletterForm;
 use app\models\AccessRights;
 use app\models\ChangePasswordForm;
 

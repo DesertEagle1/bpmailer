@@ -21,6 +21,11 @@ class Newsletter extends ActiveRecord
         return $this->getPrimaryKey();
     }
 
+    public static function findById($id){
+        return static::findOne(['id' => $id]);
+    }
+    
+
     public static function getAllNewsletters(){
         $newsletters = Newsletter::find()
             ->orderBy('created_at DESC')

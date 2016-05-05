@@ -56,7 +56,7 @@ $this->title = 'Nový newsletter | BP Mailer';
           <div class="form-group">
             <?= $form->field($model, 'content')->widget(CKEditor::className(), [
                 'options' => ['rows' => 6],
-                'preset' => 'full'
+                'preset' => 'full',
             ])->label(false) ?>
           </div>
 
@@ -68,18 +68,18 @@ $this->title = 'Nový newsletter | BP Mailer';
             <?= Html::submitButton('Uložiť', ['class' => 'btn btn-primary', 'name' => 'saveNewsletter-button']) ?>
         </div>
         <?php ActiveForm::end() ?>
-        <?php
-        /*echo "<pre>";
-        print_r($sourceCodes);
-        echo "</pre>";*/
-        ?>
     </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-
 <script type="text/javascript">
-  $("#newsletterform-template").change(function() {
-    $("#newsletterform-content").val(<?php echo json_encode($sourceCodes[1]) ?>);
+  $(document).ready(function() {
+    $("#newsletterform-template").change(function() {
+      //$("#newsletterform-content").val("something");
+      //console.log($("#newsletterform-content"));
+      //var editor = document.getElementById('newsletterform-content');
+      //editor.innerHTML = "something";
+      //console.log(editor);
+    })
   });
 </script>

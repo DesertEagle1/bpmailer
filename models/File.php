@@ -23,6 +23,11 @@ class File extends ActiveRecord
         return static::findOne(['filename_hash' => $filenameHash]);
     }
 
+    public static function findByNewsletterId($newsletterId)
+    {
+        return static::findAll(['newsletter_id' => $newsletterId]);
+    }
+
 }
 
 ?>

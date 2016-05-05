@@ -12,8 +12,10 @@ use app\models\NewsletterForm;
 use app\models\Newsletter;
 use app\models\AccessRights;
 use app\models\Group;
+use app\models\Subscriber;
 use app\models\Template;
 use app\models\UploadFiles;
+use app\models\File;
 
 class NewsletterController extends Controller
 {
@@ -138,6 +140,26 @@ class NewsletterController extends Controller
 
             return $this->render('show', 
                 array());
+        }
+
+        return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
+    }
+
+    public function actionSend($id)
+    {
+        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
+        $result = array();
+        foreach ($rights as $key => $value) {
+             $result[] = $rights[$key]['access_right_id'];
+         } 
+        Yii::$app->view->params['accessRightsArray'] = $result;
+
+        if (!empty(array_intersect([1,2], $result))) {
+            $model = Newsletter::findById($id);
+            $subscribersCount = Subscriber::countSubscribers($model->send_to_group) + sizeof(explode(",", $model->copy_to));
+            $attachments = File::findByNewsletterId($id);
+            return $this->render('send', array('model' => $model, 'subscribersCount' => $subscribersCount, 
+                                                'attachments' => $attachments));     
         }
 
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
