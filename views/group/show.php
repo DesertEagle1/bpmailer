@@ -11,6 +11,15 @@ $this->title = 'Prehľad skupiny | BP Mailer';
     <h1>Prehľad skupiny</h1>
 
     <div class="container">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title"><?= $groupInfo['group_name'] ?></h3>
+          </div>
+          <div class="panel-body">
+            <?= $groupInfo['description'] ?>
+          </div>
+        </div>
+        
     	<div class="row">
     	<?php
             $form = ActiveForm::begin([
@@ -30,6 +39,7 @@ $this->title = 'Prehľad skupiny | BP Mailer';
         <div class="row">
         <?php
             $formImport = ActiveForm::begin([
+                'options' => ['enctype' => 'multipart/form-data'],
                 'id' => 'subscribersFromFile-form',
                 'options' => ['class' => 'col-md-4'],
                             ]) ?>
@@ -61,5 +71,28 @@ $this->title = 'Prehľad skupiny | BP Mailer';
 				</div>
         <?php ActiveForm::end() ?>
         </div>
+
+        <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>E-mailová adresa</th>
+            <th></th>
+          </tr>
+        </thead>
+        <?php
+          echo "<tbody>";
+          $count = 1;
+          foreach ($addresses as $key => $value) {
+            echo "<tr>";
+            echo "<td>" . $count . "</td>";
+            echo "<td>" . $value . "</td>";
+            echo '<td><a class="btn btn-danger" href="#" role="button">Odstrániť</a></td>';
+            echo "<tr>";
+            $count++;
+          }
+          echo "</tbody> ";
+        ?>
+        </table>
     </div>
 </div>

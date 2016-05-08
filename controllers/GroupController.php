@@ -15,6 +15,7 @@ use app\models\SubscriberEmail;
 use app\models\SubscriberFormEmail;
 use app\models\SubscriberFormImport;
 use app\models\SubscriberFormExport;
+use yii\web\UploadedFile;
 
 class GroupController extends Controller
 {
@@ -120,7 +121,14 @@ class GroupController extends Controller
             $model = new SubscriberFormEmail();
             $modelImport = new SubscriberFormImport();
             $modelExport = new SubscriberFormExport();
+            $groupInfo = Group::findGroupById($id);
+            $addresses = Subscriber::getAddressesFromGroup($id);
             $items = array('csv'=>'.CSV', 'xml'=>'.XML');
+
+            if ($groupInfo == null){
+                return $this->render('error', array('name'=>'Skupina neexistuje', 
+                                    'message'=>'Skupina so zadaným ID neexistuje'));
+            }
 
             if ($model->load(Yii::$app->request->post()) && $model->validate()){
                 $subscriber = new SubscriberEmail();
@@ -136,10 +144,31 @@ class GroupController extends Controller
                     $subscriber->email_id = $emailId->id;
                     $subscriber->save();
                 }
+                return $this->refresh();
+            }
+
+            if ($modelImport->load(Yii::$app->request->post())){
+                $file = UploadedFile::getInstance($modelImport, 'importedFile');
+                $upload = $file->saveAs('uploads/data.csv');
+
+                if ($upload) {
+                    define('CSV_PATH','uploads/');
+                    $csv_file = CSV_PATH . $filename;
+                    $filecsv = file($csv_file);
+                    foreach ($filecsv as $data) {
+                        $newEmail = new Subsciber();
+                        $line = explode(",", $data);
+                        $address = $line[0];
+                        $newEmail->email = $address;
+                        $newEmail->save();
+                    }
+                    unlink('uploads/'.$filename);
+                }
             }
 
             return $this->render('show', 
-                array('model'=>$model, 'modelImport'=>$modelImport, 'modelExport'=>$modelExport, 'items'=>$items));
+                array('model'=>$model, 'modelImport'=>$modelImport, 'modelExport'=>$modelExport, 'items'=>$items,
+                        'addresses' => $addresses, 'groupInfo' => $groupInfo));
         }
 
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));

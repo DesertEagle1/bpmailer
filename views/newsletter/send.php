@@ -1,4 +1,6 @@
 <?php
+use yii\widgets\ActiveForm;
+use yii\helpers\Html;
 $this->title = 'Odoslať newsletter | BP Mailer';
 ?>
 
@@ -27,5 +29,17 @@ $this->title = 'Odoslať newsletter | BP Mailer';
 	      }
 	      ?>
   	  </ul>
+
+      <?php
+        $form = ActiveForm::begin([
+            'id' => 'sendnewsletter-form',
+        ]) ?>
+
+        <?= $form->field($modelSend, 'hide')->hiddenInput()->label(false) ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Odoslať', ['class' => 'btn btn-primary', 'name' => 'sendnewsletter-button']) ?>
+        </div>
+        <?php ActiveForm::end() ?>
     </div>
 </div>

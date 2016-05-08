@@ -17,7 +17,11 @@ class SubscriberFormImport extends Model
      */
     public function rules()
     {
-        return [];
+        return [['importedFile', 'required', 'message' => 'Musíte vybrať nejaký súbor.'],
+                ['importedFile', 'file', 'extensions' => 'csv, xml', 'message' => 'Povolené iba súbory s príponou .csv a .xml'],
+                ['importedFile', 'file', 'maxSize' => 1024*1024*5, 'message' => 'Max. veľkosť súboru je 5MB.']
+
+        ];
     }
 
     public function attributeLabels()

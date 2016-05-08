@@ -13,7 +13,7 @@ class Group extends ActiveRecord
         return '{{%groups}}';
     }
 
-    public static function findIdentity($id)
+    public static function findGroupById($id)
     {
         return static::findOne(['id' => $id]);
     }

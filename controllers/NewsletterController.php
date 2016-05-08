@@ -9,6 +9,7 @@ use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use app\models\User;
 use app\models\NewsletterForm;
+use app\models\SendNewsletterForm;
 use app\models\Newsletter;
 use app\models\AccessRights;
 use app\models\Group;
@@ -137,9 +138,12 @@ class NewsletterController extends Controller
         Yii::$app->view->params['accessRightsArray'] = $result;
 
         if (!empty(array_intersect([1,2], $result))) {
-
-            return $this->render('show', 
-                array());
+            $model = Newsletter::findById($id);
+            $subscribersCount = Subscriber::countSubscribers($model->send_to_group) + sizeof(explode(",", $model->copy_to));
+            $attachments = File::findByNewsletterId($id);
+            
+            return $this->render('show', array('model' => $model, 'subscribersCount' => $subscribersCount,
+                                'attachments' => $attachments));
         }
 
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
@@ -156,10 +160,48 @@ class NewsletterController extends Controller
 
         if (!empty(array_intersect([1,2], $result))) {
             $model = Newsletter::findById($id);
+
+            if ($model == null){
+                return $this->render('error', array('name'=>'Neznámy newsletter', 'message'=>'Newsletter so zadaným ID neexistuje.'));
+            }
+
+            if ($model->status != 1 ){
+                return $this->render('error', array('name'=>'Už odoslaný', 'message'=>'Newsletter už bol odoslaný.'));
+            }
+
             $subscribersCount = Subscriber::countSubscribers($model->send_to_group) + sizeof(explode(",", $model->copy_to));
             $attachments = File::findByNewsletterId($id);
+
+            $modelSend = new SendNewsletterForm();
+            if ($modelSend->load(Yii::$app->request->post())){
+                $addresses = Subscriber::getAddressesFromGroup($model->send_to_group);
+                $message = Yii::$app->mailer->compose();
+                $message->setFrom('p.gubik@gmail.com');
+                $message->setTo('p.gubik@gmail.com');
+                $message->setBcc($addresses);
+                if ($model->reply_to != null){
+                    $message->setReplyTo($model->reply_to);
+                }
+                $message->setSubject($model->subject);
+                $message->setHtmlBody($model->content);
+
+                $files = File::findByNewsletterId($id);
+                foreach ($files as $key => $value) {
+                    $message->attach('files/' . $value['filename_hash']);
+                }
+
+                $message->send();
+
+                $model->status = 2;
+                $model->sent_at = date('Y-m-d H:i:s');
+                $model->update();
+
+                return $this->render('sent', array());
+            }
+
             return $this->render('send', array('model' => $model, 'subscribersCount' => $subscribersCount, 
-                                                'attachments' => $attachments));     
+                                                'attachments' => $attachments, 'modelSend' => $modelSend,
+                                                ));     
         }
 
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
