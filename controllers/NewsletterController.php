@@ -176,8 +176,9 @@ class NewsletterController extends Controller
             if ($modelSend->load(Yii::$app->request->post())){
                 $addresses = Subscriber::getAddressesFromGroup($model->send_to_group);
                 $message = Yii::$app->mailer->compose();
-                $message->setFrom('p.gubik@gmail.com');
-                $message->setTo('p.gubik@gmail.com');
+                $message->setFrom('company@company.com');
+                $message->setTo('company@company.com');
+                $message->setCc(explode(",", $model->copyTo));
                 $message->setBcc($addresses);
                 if ($model->reply_to != null){
                     $message->setReplyTo($model->reply_to);

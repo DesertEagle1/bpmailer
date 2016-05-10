@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
@@ -21,8 +22,8 @@ AppAsset::register($this);
 
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <link href="css/custom.css" rel="stylesheet">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link href="<?= Url::to(['css/custom.css'], true) ?>" rel="stylesheet">
+    <link rel="shortcut icon" href="<?= Url::to(['/favicon.ico'], true) ?>" type="image/x-icon" />
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -40,19 +41,19 @@ AppAsset::register($this);
 
         $newsletterNavItems = [((in_array(2, $this->params['accessRightsArray'])) 
                             or (in_array(1, $this->params['accessRightsArray']))) ? 
-                            ['label' => 'Vytvoriť nový newsletter', 'url' => '?r=newsletter%2Fnew'] : null,
-                            ['label' => 'Prehľad newsletterov', 'url' => '?r=newsletter%2Fall'],
+                            ['label' => 'Vytvoriť nový newsletter', 'url' => Url::to(['newsletter/new'])] : null,
+                            ['label' => 'Prehľad newsletterov', 'url' => Url::to(['newsletter/all'])],
                              ];
 
         $groupNavItems = ((in_array(3, $this->params['accessRightsArray']))
                             or (in_array(1, $this->params['accessRightsArray']))) ? 
-                        [['label' => 'Vytvoriť novú skupinu', 'url' => '?r=group%2Fnew'],
-                        ['label' => 'Prehľad skupín', 'url' => '?r=group%2Fall']] : null; 
+                        [['label' => 'Vytvoriť novú skupinu', 'url' => Url::to(['group/new'])],
+                        ['label' => 'Prehľad skupín', 'url' => Url::to(['group/all'])]] : null; 
 
         $templateNavItems = ((in_array(4, $this->params['accessRightsArray'])) 
                             or (in_array(1, $this->params['accessRightsArray'])))? 
-                        [['label' => 'Vytvoriť novú šablónu', 'url' => '?r=template%2Fnew'],
-                        ['label' => 'Upraviť existujúce šablóny', 'url' => '?r=template%2Fall']] : null; 
+                        [['label' => 'Vytvoriť novú šablónu', 'url' => Url::to(['template/new'])],
+                        ['label' => 'Upraviť existujúce šablóny', 'url' => Url::to(['template/all'])]] : null; 
 
         $navItems =  [
                 [
@@ -80,8 +81,8 @@ AppAsset::register($this);
                     'label' => 'Administrácia',
                     'url' => '#',
                     'items' => [
-                        ['label' => 'Používatelia', 'url' => '?r=admin%2Fusers'],
-                        ['label' => 'Logy', 'url' => '?r=admin%2Flogs'],
+                        ['label' => 'Používatelia', 'url' => Url::to(['admin/users'])],
+                        ['label' => 'Logy', 'url' => Url::to(['admin/logs'])],
                     ],
                 ] : null,
             ];
@@ -104,8 +105,8 @@ AppAsset::register($this);
                 'label' => Yii::$app->user->identity->username,
                 'url' => '#',
                 'items' => [
-                    ['label' => 'Profil', 'url' => '?r=site%2Fprofile'],
-                    ['label' => 'Zmeniť heslo', 'url' => '?r=site%2Fchangepassword'],
+                    ['label' => 'Profil', 'url' => Url::to(['site/profile'])],
+                    ['label' => 'Zmeniť heslo', 'url' => Url::to(['site/changepassword'])],
                     '<li role="separator" class="divider"></li>',
                     '<li>'
                     . Html::beginForm(['/site/logout'], 'post')

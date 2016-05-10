@@ -29,7 +29,7 @@ $this->title = 'Zmena hesla | BP Mailer';
             </div>  
 
             <div class="form-group">
-                <?= Html::submitButton('Uložiť', ['class' => 'btn btn-primary', 'name' => 'changepassword-button']) ?>
+                <?= Html::submitButton('Zmeniť heslo', ['class' => 'btn btn-primary', 'name' => 'changepassword-button']) ?>
             </div>
         <?php ActiveForm::end() ?>
       </div>

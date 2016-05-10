@@ -30,9 +30,13 @@ class Subscriber extends ActiveRecord
 
     public static function emailInGroup($groupId, $email){
         $emailRecord = SubscriberEmail::findByEmail($email);
+        if ($emailRecord == null){
+            return true;
+        }
 
         $record = Subscriber::find()
-                ->where(['group_id' => $groupId, 'email_id' => $emailRecord->id])
+                ->where(['group_id' => $groupId, 
+                        'email_id' => $emailRecord->id])
                 ->one();
 
         if ($record != null){

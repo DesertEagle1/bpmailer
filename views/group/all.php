@@ -4,6 +4,7 @@
 /* @var $model app\models\NewsletterForm */
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\Url;
 $this->title = 'Prehľad skupín | BP Mailer';
 ?>
 
@@ -34,7 +35,7 @@ $this->title = 'Prehľad skupín | BP Mailer';
             echo "<td>" . $value['name'] . "</td>";
             echo "<td>" . $value['description'] . "</td>";
             echo "<td>" . $value['count'] . "</td>";
-            echo '<td><a class="btn btn-default" href="?r=group%2Fshow&id=' . $value['id'] . '" role="button">Prehľad skupiny</a></td>';
+            echo '<td><a class="btn btn-default" href="' . Url::to(['group/show/', 'id' => $value['id']]) . '" role="button">Prehľad skupiny</a></td>';
             echo "<tr>";
             $count++;
           }
@@ -42,6 +43,6 @@ $this->title = 'Prehľad skupín | BP Mailer';
         ?>
       
       </table>
-      <p class="text-left"><a class="btn btn-primary" href="?r=group%2Fnew" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Vytvoriť novú skupinu</a></p>
+      <p class="text-left"><a class="btn btn-primary" href="<?= Url::to(['group/new']) ?>" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Vytvoriť novú skupinu</a></p>
     </div>
 </div>

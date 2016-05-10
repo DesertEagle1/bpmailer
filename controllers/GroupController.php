@@ -119,7 +119,6 @@ class GroupController extends Controller
 
         if (!empty(array_intersect([1,3], $result))) {
             $model = new SubscriberFormEmail();
-            $modelImport = new SubscriberFormImport();
             $modelExport = new SubscriberFormExport();
             $groupInfo = Group::findGroupById($id);
             $addresses = Subscriber::getAddressesFromGroup($id);
@@ -130,6 +129,7 @@ class GroupController extends Controller
                                     'message'=>'Skupina so zadaným ID neexistuje'));
             }
 
+            // jeden e-mail zo vstupu
             if ($model->load(Yii::$app->request->post()) && $model->validate()){
                 $subscriber = new SubscriberEmail();
                 if (!(SubscriberEmail::findByEmail($model->emailAddress))){
@@ -147,22 +147,87 @@ class GroupController extends Controller
                 return $this->refresh();
             }
 
+            // e-maily z importu
+            $modelImport = new SubscriberFormImport();
             if ($modelImport->load(Yii::$app->request->post())){
                 $file = UploadedFile::getInstance($modelImport, 'importedFile');
-                $upload = $file->saveAs('uploads/data.csv');
+                $filename = 'data.'. $file->extension;
+                $upload = $file->saveAs('uploads/'. $filename);
 
                 if ($upload) {
+                    // CSV súbor
+                    if (strtolower($file->extension) == 'csv'){
                     define('CSV_PATH','uploads/');
                     $csv_file = CSV_PATH . $filename;
                     $filecsv = file($csv_file);
                     foreach ($filecsv as $data) {
-                        $newEmail = new Subsciber();
                         $line = explode(",", $data);
-                        $address = $line[0];
-                        $newEmail->email = $address;
-                        $newEmail->save();
+                        foreach ($line as $key => $value) {
+                            $value = trim($value);
+                            if(filter_var($value, FILTER_VALIDATE_EMAIL)){
+                                if (Subscriber::emailInGroup($id, $value)){
+                                    if (SubscriberEmail::findByEmail($value) == null){
+                                        $newEmail = new SubscriberEmail();
+                                        $newEmail->email = $value;
+                                        $newEmail->save();
+                                        $emailId = $newEmail->id;
+                                    }
+                                    else {
+                                        $emailId = SubscriberEmail::findByEmail($email)->id;
+                                    }
+
+                                    $newEmailInGroup = new Subscriber();
+                                    $newEmailInGroup->group_id = $id;
+                                    $newEmailInGroup->email_id = $emailId;
+                                    $newEmailInGroup->save();
+                                }
+                            }
+                        } 
                     }
                     unlink('uploads/'.$filename);
+                    return $this->refresh();
+                    }
+
+                    // XML súbor
+                    else {
+
+                    define('XML_PATH','uploads/');
+                    $xml_file = XML_PATH . $filename;
+                    $filexml = file($xml_file);
+                    $data = implode("", $filexml);
+                    $parser = xml_parser_create();
+                    xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+                    xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+                    xml_parse_into_struct($parser, $data, $values, $tags);
+                    xml_parser_free($parser);
+
+                    foreach ($values as $key => $value) {
+                        if (strtolower($value['tag']) == "email" or strtolower($value['tag']) == 'e-mail') {
+                            $address = trim($value['value']);
+                            if(filter_var($address, FILTER_VALIDATE_EMAIL)){
+                                if (Subscriber::emailInGroup($id, $address)){
+                                    if (SubscriberEmail::findByEmail($address) == null){
+                                        $newEmail = new SubscriberEmail();
+                                        $newEmail->email = $address;
+                                        $newEmail->save();
+                                        $emailId = $newEmail->id;
+                                    }
+                                    else {
+                                        $emailId = SubscriberEmail::findByEmail($email)->id;
+                                    }
+
+                                    $newEmailInGroup = new Subscriber();
+                                    $newEmailInGroup->group_id = $id;
+                                    $newEmailInGroup->email_id = $emailId;
+                                    $newEmailInGroup->save();
+                                }
+                            }
+                        }
+                    }
+
+                    unlink('uploads/'.$filename);
+                    return $this->refresh();
+                    }
                 }
             }
 

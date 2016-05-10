@@ -25,6 +25,7 @@ class NewUserForm extends Model
     {
         return [
             ['username', 'required', 'message'=>'Prihlasovacie meno nesmie byť prázdne.'],
+            ['username', 'usernameIsUnique'],
             [['password', 'passwordRepeat'], 'required', 'message'=>'Heslo nesmie byť prázdne.'],
             [['password','passwordRepeat'], 'string', 'min'=>5, 'tooShort'=>'Heslo musí obsahovať aspoň 5 znakov.'],
             [['admin', 'newsletterAccess', 'groupAccess', 'templateAccess'], 'boolean'],
@@ -52,6 +53,13 @@ class NewUserForm extends Model
             'groupAccess' => 'Správa skupín',
             'templateAccess' => 'Správa šablón',
         ];
+    }
+
+    public function usernameIsUnique($attribute, $params)
+    {
+        if (User::findByUsername($this->username)) {
+            $this->addError($attribute, 'Používateľ so zadaným menom už existuje.');
+        }
     }
 
 }

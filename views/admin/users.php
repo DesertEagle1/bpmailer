@@ -3,7 +3,7 @@
 /* @var $this yii\web\View */
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\helpers\Url;
 use app\models\User;
 
 $this->title = 'Správa prístupových práv | BP Mailer';
@@ -39,11 +39,11 @@ $this->title = 'Správa prístupových práv | BP Mailer';
                 echo "<tr>";
                 echo "<td>" . $count . "</td>";
                 echo "<td>" . $key . "</td>";
-                echo '<td class="text-center"><span class="glyphicon ' . (in_array(1, $allRights[$key]) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
-                echo '<td class="text-center"><span class="glyphicon ' . (in_array(2, $allRights[$key]) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
-                echo '<td class="text-center"><span class="glyphicon ' . (in_array(3, $allRights[$key]) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
-                echo '<td class="text-center"><span class="glyphicon ' . (in_array(4, $allRights[$key]) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
-                echo '<td class="text-center"><a class="btn btn-default" href="?r=admin%2Fedituser&id='. $usersIdList[$key] . '" role="button">Upraviť</a></td>';
+                echo '<td class="text-center"><span class="glyphicon ' . (in_array(1, $value) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
+                echo '<td class="text-center"><span class="glyphicon ' . (in_array(2, $value) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
+                echo '<td class="text-center"><span class="glyphicon ' . (in_array(3, $value) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
+                echo '<td class="text-center"><span class="glyphicon ' . (in_array(4, $value) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
+                echo '<td class="text-center"><a class="btn btn-default" href="'. Url::to(['admin/edituser', 'id' => $usersIdList[$key]]) . '" role="button">Upraviť</a></td>';
                 echo "</tr>";
                 $count++;
             }
@@ -51,6 +51,6 @@ $this->title = 'Správa prístupových práv | BP Mailer';
         </tbody>
 
     </table>
-    <p><a class="btn btn-primary" href="?r=admin%2Fnewuser" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Pridať nového používateľa</a></p>
+    <p><a class="btn btn-primary" href="<?= Url::to(['admin/newuser']) ?>" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Pridať nového používateľa</a></p>
     </div>
 </div>

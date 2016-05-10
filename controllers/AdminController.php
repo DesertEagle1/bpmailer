@@ -108,12 +108,8 @@ class AdminController extends Controller
         Yii::$app->view->params['accessRightsArray'] = $result;
 
         if (in_array(1, $result)) {
+
             $model = new NewUserForm();
-            if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            }
-            
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
                 $user = new User();
                 $user->username = $model->username;
@@ -152,6 +148,8 @@ class AdminController extends Controller
                     }
                     
                 }
+
+                $this->refresh();
             }
             return $this->render('newuser', array('model' => $model));
         }

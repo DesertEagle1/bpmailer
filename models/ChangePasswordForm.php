@@ -11,6 +11,8 @@ class ChangePasswordForm extends Model
     public $newPassword;
     public $newPasswordRepeat;
 
+    private $_user;
+
     /**
      * @return array the validation rules.
      */
@@ -33,13 +35,24 @@ class ChangePasswordForm extends Model
         ];
     }
 
-    public function validatePassword(){
-        $user = User::findIdentity(Yii::$app->user->identity->id);
-        
-        if (!$user || !$user->validatePassword($this->oldPassword)) {
-            return false;
+    public function validatePassword($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+
+            if (!$user || !$user->validatePassword($this->oldPassword)) {
+                $this->addError($attribute, 'Nesprávne heslo');
+            }
         }
-        return true;
+    }
+
+    public function getUser()
+    {
+        if ($this->_user === null) {
+            $this->_user = User::findIdentity(Yii::$app->user->identity->id);
+        }
+
+        return $this->_user;
     }
 
 }

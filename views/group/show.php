@@ -39,9 +39,9 @@ $this->title = 'Prehľad skupiny | BP Mailer';
         <div class="row">
         <?php
             $formImport = ActiveForm::begin([
-                'options' => ['enctype' => 'multipart/form-data'],
                 'id' => 'subscribersFromFile-form',
-                'options' => ['class' => 'col-md-4'],
+                'options' => ['enctype' => 'multipart/form-data',
+                                'class' => 'col-md-4']
                             ]) ?>
 
 				<div class="form-group">
@@ -72,6 +72,7 @@ $this->title = 'Prehľad skupiny | BP Mailer';
         <?php ActiveForm::end() ?>
         </div>
 
+        <h3>Zoznam adries</h3>
         <table class="table table-striped table-hover">
         <thead>
           <tr>
