@@ -1,0 +1,15 @@
+var elems = document.getElementsByTagName('select');
+var values = {};
+for (i = 0; i < elems.length; i++) {
+    values[elems[i].name] = elems[i].value;
+}
+var result = "var result = {";
+var temp = "";
+for (var key in values) {
+    temp = '"' + key.replace('"','\"') + '":' + "'" + values[key].replace('"','\"') + "', ";
+    result += temp;
+}
+
+result = result.substring(0, result.length - 2);
+result += "};";
+console.log(result);

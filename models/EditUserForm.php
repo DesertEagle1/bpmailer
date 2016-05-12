@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
-class EditUser extends Model
+class EditUserForm extends Model
 {
     public $admin;
     public $newsletterAccess;

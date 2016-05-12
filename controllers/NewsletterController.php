@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use app\models\User;
 use app\models\NewsletterForm;
 use app\models\SendNewsletterForm;
@@ -99,9 +100,9 @@ class NewsletterController extends Controller
 
                 $currentID = $newsletter->id;
                 $modelUpload->attachments = UploadedFile::getInstances($modelUpload, 'attachments');
-                if ($modelUpload->upload($currentID)) {
-                    // Success
-                }
+                $modelUpload->upload($currentID);
+                
+                return $this->redirect(Url::to(['newsletter/all']));
             }
 
             return $this->render('new', array('model' => $model, 'modelUpload' => $modelUpload, 

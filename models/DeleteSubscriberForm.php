@@ -5,24 +5,21 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
-class SubscriberFormExport extends Model
+class DeleteSubscriberForm extends Model
 {
-    public $exportFileFormat;
-
+    public $hiddenInput;
     /**
      * @return array the validation rules.
      */
     public function rules()
     {
         return [
-            ['exportFileFormat', 'required', 'message'=>'Musíte zvoliť formát súboru.']
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'exportFileFormat' => 'Exportovať adresy do súboru'
         ];
     }
 

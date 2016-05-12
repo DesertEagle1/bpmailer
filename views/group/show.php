@@ -3,6 +3,7 @@
 /* @var $this yii\web\View */
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\Url;
 $this->title = 'Prehľad skupiny | BP Mailer';
 ?>
 
@@ -87,8 +88,13 @@ $this->title = 'Prehľad skupiny | BP Mailer';
           foreach ($addresses as $key => $value) {
             echo "<tr>";
             echo "<td>" . $count . "</td>";
-            echo "<td>" . $value . "</td>";
-            echo '<td><a class="btn btn-danger" href="#" role="button">Odstrániť</a></td>';
+            echo "<td>" . $key . "</td>";
+            /*echo '<td><a class="btn btn-danger" href="' 
+                . Url::to(['group/delete', 'groupid' => $value['group_id'], 'emailid' => $value['email_id'] ]) . 
+                '" role="button">Odstrániť</a></td>';*/
+            echo '<td>' . Html::a('Odstrániť', 
+                                ['group/delete/' . $value['group_id'] . '/' . $value['email_id']], 
+                                ['class' => 'btn btn-danger', 'role' => 'button']) . '</td>';    
             echo "<tr>";
             $count++;
           }

@@ -10,8 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\User;
 use app\models\AccessRights;
 use app\models\NewUserForm;
-use app\models\EditUser;
-use yii\data\ActiveDataProvider;
+use app\models\EditUserForm;
 
 class AdminController extends Controller
 {
@@ -184,7 +183,7 @@ class AdminController extends Controller
         $username = $username->username;
 
         if (in_array(1, $result)) {
-            $model = new EditUser();
+            $model = new EditUserForm();
             in_array(1, $accessRights) ? $model->admin = 1 : $model->admin = 0;
             in_array(2, $accessRights) ? $model->newsletterAccess = 1 : $model->newsletterAccess = 0;
             in_array(3, $accessRights) ? $model->groupAccess = 1 : $model->groupAccess = 0;

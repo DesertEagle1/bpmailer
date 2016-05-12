@@ -59,6 +59,20 @@ class Subscriber extends ActiveRecord
         return $result;
     }
 
+    public static function getAddressesAndIds($groupId){
+        $addresses = Subscriber::find()
+            ->innerJoinWith('emails')
+            ->where(['group_id' => $groupId])
+            ->all();
+
+        $result = array();
+        foreach ($addresses as $key => $value) {
+            $result[$value['emails']['email']] = array('group_id' => $value['group_id'], 'email_id' => $value['email_id']);
+        }
+
+        return $result;
+    }
+
     public function getEmails()
     {
         return $this->hasOne(SubscriberEmail::className(), ['id' => 'email_id']);

@@ -10,6 +10,7 @@ use app\models\User;
 use app\models\AccessRights;
 use app\models\Template;
 use app\models\NewTemplateForm;
+use app\models\EditTemplateForm;
 
 class TemplateController extends Controller
 {
@@ -95,7 +96,37 @@ class TemplateController extends Controller
         Yii::$app->view->params['accessRightsArray'] = $result;
 
         if (!empty(array_intersect([1,4], $result))) {
-            return $this->render('all', array());
+            $templates = Template::find()->all();
+            return $this->render('all', array('templates' => $templates));
+        }
+
+        return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
+    }
+
+    public function actionShow($id)
+    {
+        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
+        $result = array();
+        foreach ($rights as $key => $value) {
+             $result[] = $rights[$key]['access_right_id'];
+         } 
+        Yii::$app->view->params['accessRightsArray'] = $result;
+
+        if (!empty(array_intersect([1,4], $result))) {
+            $template = Template::findOne(['id' => $id]);
+            
+            if ($template === null){
+                return $this->render('error', array('name'=>'Šablóna neexistuje', 'message'=>'Šablóna so zadaným ID neexistuje.'));
+            }
+
+            $model = new EditTemplateForm();
+            $model->sourceCode = $template->source_code;
+            if ($model->load(Yii::$app->request->post()) && $model->validate()){
+                $template = Template::findById($id);
+                $template->source_code = $model->sourceCode;
+                $template->update();
+            }
+            return $this->render('show', array('model' => $model, 'template' => $template));
         }
 
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));

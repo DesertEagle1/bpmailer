@@ -1,0 +1,4 @@
+for (var key in result) {
+	var current = document.getElementsByName(key);
+	current[0].value = result[key];
+}

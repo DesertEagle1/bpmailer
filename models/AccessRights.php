@@ -30,7 +30,7 @@ class AccessRights extends ActiveRecord
 
         $userRights = array();
         foreach ($users as $key => $value) {
-            $userRights[$users[$key]['username']]  = array();
+            $userRights[$value['username']]  = array();
         }
 
         $rights = AccessRights::find()

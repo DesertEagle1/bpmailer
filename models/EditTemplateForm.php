@@ -5,9 +5,9 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
-class SubscriberFormExport extends Model
+class EditTemplateForm extends Model
 {
-    public $exportFileFormat;
+    public $sourceCode;
 
     /**
      * @return array the validation rules.
@@ -15,14 +15,14 @@ class SubscriberFormExport extends Model
     public function rules()
     {
         return [
-            ['exportFileFormat', 'required', 'message'=>'Musíte zvoliť formát súboru.']
+            ['sourceCode', 'required', 'message' => '{attribute} nesmie byť prázdny.'],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'exportFileFormat' => 'Exportovať adresy do súboru'
+            'sourceCode' => 'Zdrojový kód',
         ];
     }
 

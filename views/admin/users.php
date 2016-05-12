@@ -43,7 +43,7 @@ $this->title = 'Správa prístupových práv | BP Mailer';
                 echo '<td class="text-center"><span class="glyphicon ' . (in_array(2, $value) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
                 echo '<td class="text-center"><span class="glyphicon ' . (in_array(3, $value) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
                 echo '<td class="text-center"><span class="glyphicon ' . (in_array(4, $value) ? 'glyphicon-ok ' : ' ') . 'aria-hidden="true"></span></td>';
-                echo '<td class="text-center"><a class="btn btn-default" href="'. Url::to(['admin/edituser', 'id' => $usersIdList[$key]]) . '" role="button">Upraviť</a></td>';
+                echo '<td class="text-center"><a class="btn btn-primary" href="'. Url::to(['admin/edituser', 'id' => $usersIdList[$key]]) . '" role="button">Upraviť</a></td>';
                 echo "</tr>";
                 $count++;
             }
