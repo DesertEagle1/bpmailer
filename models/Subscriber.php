@@ -59,11 +59,29 @@ class Subscriber extends ActiveRecord
         return $result;
     }
 
+    public static function getTodaySubscribers(){
+        $start = date("Y-m-d") . ' 00:00:00';
+        $end = date("Y-m-d") . ' 23:59:59';
+        $addresses = Subscriber::find()
+            ->innerJoinWith('emails')
+            ->where(['between', 'since', $start, $end])
+            ->all();
+
+        $result = array();
+        foreach ($addresses as $key => $value) {
+            $result[] = $value['emails']['email'];
+        }
+
+        return $result;
+    }
+
     public static function getAddressesAndIds($groupId){
         $addresses = Subscriber::find()
             ->innerJoinWith('emails')
             ->where(['group_id' => $groupId])
             ->all();
+
+        return $addresses;
 
         $result = array();
         foreach ($addresses as $key => $value) {

@@ -4,8 +4,11 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\web\Controller;
+use yii\web\UploadedFile;
+use yii\data\Pagination;
+use yii\helpers\Url;
 use app\models\User;
 use app\models\Group;
 use app\models\AccessRights;
@@ -16,8 +19,7 @@ use app\models\SubscriberFormEmail;
 use app\models\SubscriberFormImport;
 use app\models\SubscriberFormExport;
 use app\models\DeleteSubscriberForm;
-use yii\web\UploadedFile;
-use yii\helpers\Url;
+use app\models\Log;
 
 class GroupController extends Controller
 {
@@ -87,16 +89,21 @@ class GroupController extends Controller
                 $group->description = $model->description;
                 $group->save();
 
+                Log::writeLog(Yii::$app->user->id, 4, $model->name);
+
                 $id = $group->id;
 
                 $file = UploadedFile::getInstance($model, 'file');
                 if ($file === null){
+                    Yii::$app->session->setFlash('success', 'Skupina ' . $model->name .' bola úspešne vytvorená.');
                     return $this->redirect(Url::to(['group/show/', 'id' => $id]));
                 }
                 $filename = 'data.'. $file->extension;
                 $upload = $file->saveAs('uploads/'. $filename);
 
                 if ($upload) {
+                    Log::writeLog(Yii::$app->user->id, 5, $model->name);
+
                     // CSV súbor
                     if (strtolower($file->extension) == 'csv'){
                     define('CSV_PATH','uploads/');
@@ -108,9 +115,8 @@ class GroupController extends Controller
                     unlink('uploads/'.$filename);
                     }
 
+                else {
                     // XML súbor
-                    else {
-
                     define('XML_PATH','uploads/');
                     $xml_file = XML_PATH . $filename;
                     $filexml = file($xml_file);
@@ -126,6 +132,7 @@ class GroupController extends Controller
                     unlink('uploads/'.$filename);
                     
                     }
+                    Yii::$app->session->setFlash('success', 'Skupina ' . $model->name .' bola úspešne vytvorený.');
                     return $this->redirect(Url::to(['group/show/', 'id' => $id]));
                 }
             }
@@ -152,7 +159,7 @@ class GroupController extends Controller
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
     }
 
-    public function actionShow($id)
+    public function actionShow($id, $page = 0)
     {
         $rights = AccessRights::getAccessRights(Yii::$app->user->id);
         $result = array();
@@ -164,7 +171,16 @@ class GroupController extends Controller
         if (!empty(array_intersect([1,3], $result))) {
             $model = new SubscriberFormEmail();
             $groupInfo = Group::findGroupById($id);
-            $addresses = Subscriber::getAddressesAndIds($id);
+
+            $query = Subscriber::find()
+                        ->innerJoinWith('emails')
+                        ->where(['group_id' => $id]);
+            $count = $query->count();
+            $pagination = new Pagination(['totalCount' => $count]);
+            $addresses = $query->offset($pagination->offset)
+                        ->limit($pagination->limit)
+                        ->all();
+
             $items = array('csv'=>'.CSV', 'xml'=>'.XML');
 
             if ($groupInfo == null){
@@ -179,6 +195,9 @@ class GroupController extends Controller
                     $subscriber->email = $model->emailAddress;
                     $subscriber->save();
                 }
+                else {
+                    Yii::$app->session->setFlash('error', 'Adresa sa už nachádza v skupine.');
+                }
 
                 if (Subscriber::emailInGroup($id, $model->emailAddress)){
                     $emailId = SubscriberEmail::findByEmail($model->emailAddress);
@@ -186,7 +205,12 @@ class GroupController extends Controller
                     $subscriber->group_id = $id;
                     $subscriber->email_id = $emailId->id;
                     $subscriber->save();
+
+                    Log::writeLog(Yii::$app->user->id, 6, ($groupInfo->group_name . ',' . $model->emailAddress));
+
+                    Yii::$app->session->setFlash('success', 'Adresa bola úspešne pridaná do skupiny.');
                 }
+
                 return $this->refresh();
             }
 
@@ -198,6 +222,7 @@ class GroupController extends Controller
                 $upload = $file->saveAs('uploads/'. $filename);
 
                 if ($upload) {
+                    Log::writeLog(Yii::$app->user->id, 5, $groupInfo->group_name);
                     // CSV súbor
                     if (strtolower($file->extension) == 'csv'){
                     define('CSV_PATH','uploads/');
@@ -207,6 +232,7 @@ class GroupController extends Controller
                     $this->importFromCSV($filecsv, $id);
 
                     unlink('uploads/'.$filename);
+                    Yii::$app->session->setFlash('success', 'Import adries prebehol úspešne.');
                     return $this->refresh();
                     }
 
@@ -226,6 +252,7 @@ class GroupController extends Controller
                     $this->importFromXML($values, $id);
 
                     unlink('uploads/'.$filename);
+                    Yii::$app->session->setFlash('success', 'Import adries prebehol úspešne.');
                     return $this->refresh();
                     }
                 }
@@ -246,7 +273,7 @@ class GroupController extends Controller
 
             return $this->render('show', 
                 array('model'=>$model, 'modelImport'=>$modelImport, 'modelExport'=>$modelExport, 'items'=>$items,
-                        'addresses' => $addresses, 'groupInfo' => $groupInfo));
+                        'addresses' => $addresses, 'groupInfo' => $groupInfo, 'pagination' => $pagination));
         }
 
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
@@ -335,6 +362,7 @@ class GroupController extends Controller
             if ($model->load(Yii::$app->request->post())){
                 $record = Subscriber::findOne(['group_id' => $groupid, 'email_id' => $emailid]);
                 $record->delete();
+                Log::writeLog(Yii::$app->user->id, 7, ($group->group_name . ',' . $subscriber->email));
 
                 $exists = Subscriber::findOne(['email_id' => $emailid]);
                 if ($exists === null){

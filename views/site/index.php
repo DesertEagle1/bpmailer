@@ -2,6 +2,8 @@
 
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\Url;
+use scotthuangzl\googlechart\GoogleChart;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\LoginForm */
@@ -49,15 +51,46 @@ else
     <div class="jumbotron">
       
       <div class="row">
-        <div class="col-lg-4"><img src="img/graf01.png" alt="graf 1"></div>
-        <div class="col-lg-4"><img src="img/graf02.png" alt="graf 2"></div>
-        <div class="col-lg-4"><img src="img/graf02.png" alt="graf 2"></div>
+        <div class="col-lg-6">
+        <?php  
+        echo GoogleChart::widget(array('visualization' => 'PieChart',
+                'data' => array(
+                    array('Task', 'Hours per Day'),
+                    array('Work', 11),
+                    array('Eat', 2),
+                    array('Commute', 2),
+                    array('Watch TV', 2),
+                    array('Sleep', 7)
+                ),
+                'options' => array(
+                    'title' => 'My Daily Activity',
+                    )));
+        ?>
+        </div>
+
+        <div class="col-lg-6">
+        <?php
+        echo GoogleChart::widget(array('visualization' => 'LineChart',
+                'data' => array(
+                    array('Task', 'Hours per Day'),
+                    array('Work', 11),
+                    array('Eat', 2),
+                    array('Commute', 2),
+                    array('Watch TV', 2),
+                    array('Sleep', 7)
+                ),
+                'options' => array(
+                    'title' => 'My Daily Activity',
+                    'legend' => array('position' => 'bottom'),
+                )));
+        ?>
+        </div>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-6">
         <h2>Najnovšie newslettere</h2>
-        <p class="text-right"><a class="btn btn-primary" href="newsletter.html" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Vytvoriť nový newsletter</a></p>
+        <p class="text-right"><a class="btn btn-primary" href="<?= Url::to(['newsletter/new']) ?>" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Vytvoriť nový newsletter</a></p>
         <table class="table table-striped table-hover">
           <thead>
             <tr>
@@ -69,37 +102,35 @@ else
           </thead>
 
           <tbody>
-            <tr>
-              <td>3.1.2016</td>
-              <td>Výpredaj notebookov</td>
-              <td>914</td>
-              <td>59,6%</td>
-            </tr>
+            <?php
+              foreach ($newsletters as $key => $value) {
+                echo "<tr>";
+                $date = new DateTime($value['created_at']);
+                $date = $date->format('d.m.Y');
+                echo '<td>' . $date . '</td>';
+                echo '<td>' . $value['subject'] . '</td>';
+                echo '<td>' . $value['subscribersCount'] . '</td>';
+                echo '<td>N/A</td>';
+                echo "</tr>";
 
-            <tr>
-              <td>2.1.2016</td>
-              <td>Nové smartfóny</td>
-              <td>1103</td>
-              <td>63%</td>
-            </tr>
-
-            <tr>
-              <td>1.1.2016</td>
-              <td>Späť do školy</td>
-              <td>677</td>
-              <td>51%</td>
-            </tr>
+              }
+            ?>
           </tbody>  
 
         </table>
-        <p><a href="?r=site%2Fcampaigns">Zoznam všetkých newsletterov</a></p>
+        <p><a href="<?= Url::to(['newsletter/all']) ?>">Zoznam všetkých newsletterov</a></p>
       </div>
       <div class="col-lg-6">
-        <h2>Dnešná aktivita (1.1.2016)</h2>
+        <h2>Dnešná aktivita (<?= date('d.n.Y') ?>)</h2>
         
         <h3>Noví odberatelia</h3>
-        <p>Dnes pribudlo <strong>8</strong> nových odberateľov: address1@mail.com, address2@mail.com, address3@mail.com, address4@mail.com</p>
-        <a href="?r=site%2Fgroups">Prehľad skupín</a>
+        <p>Dnes pribudlo <strong> <?= sizeof($todaySubscribers) ?></strong> nových odberateľov:
+        <?php
+          foreach ($todaySubscribers as $key => $value) {
+            echo $value . ', ';
+          }
+        ?> </p>
+        <a href="<?= Url::to(['group/all']) ?>">Prehľad skupín</a>
         <h3>Úspešnosť</h3>
         <p>Newslettere si dnes otvorilo <strong>725</strong> odberateľov.</p>
       </div>

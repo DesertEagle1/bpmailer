@@ -11,8 +11,7 @@ $this->title = 'Prehľad skupín | BP Mailer';
 <div class="site-index">
 
     <h1>Prehľad skupín</h1>
-
-
+       
     <div class="container">
       
       <table class="table table-striped table-hover">

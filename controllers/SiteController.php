@@ -10,6 +10,8 @@ use app\models\User;
 use app\models\LoginForm;
 use app\models\AccessRights;
 use app\models\ChangePasswordForm;
+use app\models\Newsletter;
+use app\models\Subscriber;
 
 class SiteController extends Controller
 {
@@ -56,16 +58,21 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
-        else
-        {   
-            $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-            $result = array();
-            foreach ($rights as $key => $value) {
-                 $result[] = $rights[$key]['access_right_id'];
-             } 
-            Yii::$app->view->params['accessRightsArray'] = $result;
-            return $this->render('index', array('model'=>$model));
-        }
+          
+        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
+        $result = array();
+        foreach ($rights as $key => $value) {
+             $result[] = $rights[$key]['access_right_id'];
+         } 
+        Yii::$app->view->params['accessRightsArray'] = $result;
+
+        $newsletters = Newsletter::getAllNewsletters();
+        $newsletters = array_slice($newsletters, 0, 3);
+        $todaySubscribers = array_unique(Subscriber::getTodaySubscribers());
+
+        return $this->render('index', array('model'=>$model, 'newsletters' => $newsletters, 
+                                            'todaySubscribers' => $todaySubscribers));
+        
     }
 
     /**

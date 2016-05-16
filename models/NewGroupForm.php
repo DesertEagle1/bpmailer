@@ -21,6 +21,7 @@ class NewGroupForm extends Model
     {
         return [
             [['name','description'], 'required', 'message'=>'{attribute} nesmie byť prázdny.'],
+            ['name', 'nameUnique']
         ];
     }
 
@@ -31,6 +32,12 @@ class NewGroupForm extends Model
             'description' => 'Popis skupiny',
             'file' => 'Súbor s adresami'
         ];
+    }
+
+    public function nameUnique(){
+        if (Group::findGroupByName($this->name)) {
+            $this->addError('name', 'Skupina so zadaným menom už existuje.');
+        }
     }
 
 }

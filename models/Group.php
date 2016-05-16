@@ -18,6 +18,11 @@ class Group extends ActiveRecord
         return static::findOne(['id' => $id]);
     }
 
+    public static function findGroupByName($name)
+    {
+        return static::findOne(['group_name' => $name]);
+    }
+
     public static function getAllGroups(){
     	$groups = Group::find()
             ->all();

@@ -11,6 +11,7 @@ use app\models\AccessRights;
 use app\models\Template;
 use app\models\NewTemplateForm;
 use app\models\EditTemplateForm;
+use app\models\Log;
 
 class TemplateController extends Controller
 {
@@ -79,6 +80,8 @@ class TemplateController extends Controller
                 $template->template_name = $model->name;
                 $template->source_code = $model->sourceCode;
                 $template->save();
+
+                Log::writeLog(Yii::$app->user->id, 9, $model->name);
             }
             return $this->render('new', array('model' => $model));
         }
@@ -125,6 +128,8 @@ class TemplateController extends Controller
                 $template = Template::findById($id);
                 $template->source_code = $model->sourceCode;
                 $template->update();
+
+                Log::writeLog(Yii::$app->user->id, 10, $template->template_name);
             }
             return $this->render('show', array('model' => $model, 'template' => $template));
         }

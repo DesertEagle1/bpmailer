@@ -19,7 +19,9 @@
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "2amigos/yii2-ckeditor-widget": "~1.0",
-        "kartik-v/yii2-export": "*"
+        "kartik-v/yii2-export": "*",
+        "sibilino/yii2-dygraphswidget": "*",
+        "scotthuangzl/yii2-google-chart": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

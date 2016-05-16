@@ -5,12 +5,17 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 
-
 $this->title = 'Prehľad newslettera | BP Mailer';
 ?>
 
 <div class="site-index">
-
+    <?php
+      if (Yii::$app->session->hasFlash('success')){
+        echo '<div class="alert alert-success" role="alert">';
+        echo Yii::$app->session->getFlash('success');
+        echo "</div>";
+      }
+    ?>
     <h1>Prehľad newslettera</h1>
 
     <div class="body-content">

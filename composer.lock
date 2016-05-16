@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c2e6d30d5809b0e4232f2e0a41b921d6",
-    "content-hash": "973ccc794f35e1739ea9763258cf12df",
+    "hash": "281af85d2c591086d5b87b6982dfba34",
+    "content-hash": "a7159a2f2dd03681489c0f15fe681958",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -573,6 +573,94 @@
                 "xlsx"
             ],
             "time": "2015-05-01 07:00:55"
+        },
+        {
+            "name": "scotthuangzl/yii2-google-chart",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ScottHuangZL/yii2-google-chart.git",
+                "reference": "6bd68466030af8a931b34d2ceacf0a498da5b9a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ScottHuangZL/yii2-google-chart/zipball/6bd68466030af8a931b34d2ceacf0a498da5b9a0",
+                "reference": "6bd68466030af8a931b34d2ceacf0a498da5b9a0",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "scotthuangzl\\googlechart\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Scott Huang",
+                    "email": "zhiliang.huang@gmail.com"
+                }
+            ],
+            "description": "A wraper for google chart",
+            "keywords": [
+                "extension",
+                "google chart",
+                "hzl",
+                "scott huang",
+                "widget",
+                "yii2"
+            ],
+            "time": "2015-06-11 12:13:00"
+        },
+        {
+            "name": "sibilino/yii2-dygraphswidget",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sibilino/yii2-dygraphswidget.git",
+                "reference": "0472d92de0621702faeb1a89e4db71321069d81a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sibilino/yii2-dygraphswidget/zipball/0472d92de0621702faeb1a89e4db71321069d81a",
+                "reference": "0472d92de0621702faeb1a89e4db71321069d81a",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "sibilino\\y2dygraphs\\": "widget/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luis Hernández Hernández",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Graphing and charting widget for Yii 2, based on Dygraphs.js",
+            "homepage": "https://github.com/Sibilino/yii2-dygraphswidget",
+            "keywords": [
+                "chart",
+                "dygraphs",
+                "graph",
+                "widget",
+                "yii"
+            ],
+            "time": "2015-11-30 15:47:54"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1178,7 +1266,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "scotthuangzl/yii2-google-chart": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

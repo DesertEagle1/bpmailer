@@ -4,13 +4,16 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\data\Pagination;
 use yii\filters\VerbFilter;
 use app\models\User;
 use app\models\AccessRights;
 use app\models\NewUserForm;
 use app\models\EditUserForm;
+use app\models\Log;
 
 class AdminController extends Controller
 {
@@ -82,7 +85,7 @@ class AdminController extends Controller
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
     }
 
-    public function actionLogs()
+    public function actionLogs($page = 0)
     {
         $rights = AccessRights::getAccessRights(Yii::$app->user->id);
         $result = array();
@@ -92,7 +95,13 @@ class AdminController extends Controller
         Yii::$app->view->params['accessRightsArray'] = $result;
 
         if (in_array(1, $result)) {
-            return $this->render('logs');
+            $query = Log::getLogs();
+            $count = $query->count();
+            $pagination = new Pagination(['totalCount' => $count]);
+            $logs = $query->offset($pagination->offset)
+                        ->limit($pagination->limit)
+                        ->all();
+            return $this->render('logs', array('logs' => $logs, 'pagination' => $pagination));
         }
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
     }
@@ -132,7 +141,6 @@ class AdminController extends Controller
                     }
                     
                     $rights = new AccessRights();
-
                     if ($model->groupAccess){
                         $rights->user_id = $id;
                         $rights->access_right_id = 3;
@@ -145,10 +153,11 @@ class AdminController extends Controller
                         $rights->access_right_id = 4;
                         $rights->save();
                     }
-                    
                 }
-
-                $this->refresh();
+                Log::writeLog(Yii::$app->user->id, 11, $model->username);
+                Yii::$app->session->setFlash('success', 'Používateľ ' . $model->username .' bol úspešne vytvorený.');
+                return $this->redirect(Url::to(['admin/users']));
+                
             }
             return $this->render('newuser', array('model' => $model));
         }
@@ -184,10 +193,10 @@ class AdminController extends Controller
 
         if (in_array(1, $result)) {
             $model = new EditUserForm();
-            in_array(1, $accessRights) ? $model->admin = 1 : $model->admin = 0;
-            in_array(2, $accessRights) ? $model->newsletterAccess = 1 : $model->newsletterAccess = 0;
-            in_array(3, $accessRights) ? $model->groupAccess = 1 : $model->groupAccess = 0;
-            in_array(4, $accessRights) ? $model->templateAccess = 1 : $model->templateAccess = 0;
+            in_array(1, $accessRights) ? $model->admin = true : $model->admin = false;
+            in_array(2, $accessRights) ? $model->newsletterAccess = true : $model->newsletterAccess = false;
+            in_array(3, $accessRights) ? $model->groupAccess = true : $model->groupAccess = false;
+            in_array(4, $accessRights) ? $model->templateAccess = true : $model->templateAccess = false;
 
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
@@ -223,7 +232,9 @@ class AdminController extends Controller
                     AccessRights::deleteAccessRight($id, 4);
                 }
 
-               return $this->refresh();
+                Log::writeLog(Yii::$app->user->id, 12, $username);
+                Yii::$app->session->setFlash('success', 'Používateľské práva boli zmenené.');
+                return $this->refresh();
             }
             return $this->render('edituser', array('model' => $model, 'accessRights' => $accessRights, 'username' => $username));
         }

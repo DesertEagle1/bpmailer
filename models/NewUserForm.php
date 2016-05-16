@@ -55,10 +55,9 @@ class NewUserForm extends Model
         ];
     }
 
-    public function usernameIsUnique($attribute, $params)
-    {
+    public function usernameIsUnique(){
         if (User::findByUsername($this->username)) {
-            $this->addError($attribute, 'Používateľ so zadaným menom už existuje.');
+            $this->addError('username', 'Používateľ so zadaným menom už existuje.');
         }
     }
 

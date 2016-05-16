@@ -11,6 +11,13 @@ $this->title = 'Správa prístupových práv | BP Mailer';
 
     <h1>Správa prístupových práv</h1>
 
+    <?php
+     if (Yii::$app->session->hasFlash('success')){
+        echo '<div class="alert alert-success" role="alert">';
+        echo Yii::$app->session->getFlash('success');
+        echo "</div>";
+     }
+     ?>
 
     <div class="container">
 

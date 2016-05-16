@@ -18,6 +18,7 @@ use app\models\Subscriber;
 use app\models\Template;
 use app\models\UploadFiles;
 use app\models\File;
+use app\models\Log;
 
 class NewsletterController extends Controller
 {
@@ -101,6 +102,8 @@ class NewsletterController extends Controller
                 $currentID = $newsletter->id;
                 $modelUpload->attachments = UploadedFile::getInstances($modelUpload, 'attachments');
                 $modelUpload->upload($currentID);
+
+                Log::writeLog(Yii::$app->user->id, 2, $model->subject);
                 
                 return $this->redirect(Url::to(['newsletter/all']));
             }
@@ -179,7 +182,9 @@ class NewsletterController extends Controller
                 $message = Yii::$app->mailer->compose();
                 $message->setFrom('company@company.com');
                 $message->setTo('company@company.com');
-                $message->setCc(explode(",", $model->copyTo));
+                if ($model->copy_to != null){
+                    $message->setCc(explode(",", $model->copy_to));
+                }
                 $message->setBcc($addresses);
                 if ($model->reply_to != null){
                     $message->setReplyTo($model->reply_to);
@@ -198,7 +203,10 @@ class NewsletterController extends Controller
                 $model->sent_at = date('Y-m-d H:i:s');
                 $model->update();
 
-                return $this->render('sent', array());
+                Log::writeLog(Yii::$app->user->id, 3, $model->subject);
+
+                Yii::$app->session->setFlash('success', 'Newsletter sa podarilo úspešne odoslať.');
+                return $this->redirect(Url::to(['newsletter/show', 'id'=> $id]));
             }
 
             return $this->render('send', array('model' => $model, 'subscribersCount' => $subscribersCount, 

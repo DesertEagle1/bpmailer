@@ -37,6 +37,7 @@ class Newsletter extends ActiveRecord
             $result[$key]['id'] = $value['id'];
             $result[$key]['subject'] = $value['subject'];
             $result[$key]['status'] = Status::findById($value['status'])->status_name;
+            $result[$key]['subscribersCount'] = Subscriber::countSubscribers($value['send_to_group']) + sizeof(explode(",", $value['copy_to']));
             $result[$key]['created_at'] = $value['created_at'];
             $result[$key]['sent_at'] = $value['sent_at'];
         }

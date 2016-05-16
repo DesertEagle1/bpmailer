@@ -112,7 +112,8 @@ AppAsset::register($this);
                     . Html::beginForm(['/site/logout'], 'post')
                     . Html::submitButton(
                         '<span class="glyphicon glyphicon-off" aria-hidden="true"></span> Odhlásiť (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'btn btn-link']
+                        ['class' => 'btn btn-link',
+                        'id' => 'logout-button']
                     )
                     . Html::endForm()
                     . '</li>',

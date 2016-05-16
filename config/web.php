@@ -51,10 +51,12 @@ $config = [
             'showScriptName' => false,
             'enablePrettyUrl' => true,
             'rules' => array(
+                    'admin/logs/<page:\d+>' => 'admin/logs',
+                    'group/show/<id:\d+>/<page:\d+>' => 'group/show',
+                    'group/delete/<groupid:\d+>/<emailid:\d+>' => 'group/delete',
                     '<controller:\w+>/<id:\d+>' => '<controller>/view',
                     '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                     '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-                    'group/delete/<groupid:\d+>/<emailid:\d+>' => 'group/delete',
             ),
             ],
     ],

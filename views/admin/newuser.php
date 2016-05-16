@@ -20,7 +20,7 @@ $this->title = 'Vytvorenie nového používateľa | BP Mailer';
 
         ]); ?>
   
-            <?= $form->field($model, 'username', ['enableAjaxValidation' => true]) ?>       
+            <?= $form->field($model, 'username') ?>       
     
             <?= $form->field($model, 'password')->passwordInput() ?>
                     

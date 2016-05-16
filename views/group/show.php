@@ -4,12 +4,27 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\LinkPager;
 $this->title = 'Prehľad skupiny | BP Mailer';
 ?>
 
 <div class="site-index">
 
     <h1>Prehľad skupiny</h1>
+
+    <?php
+     if (Yii::$app->session->hasFlash('success')){
+        echo '<div class="alert alert-success" role="alert">';
+        echo Yii::$app->session->getFlash('success');
+        echo "</div>";
+     }
+
+     if (Yii::$app->session->hasFlash('error')){
+        echo '<div class="alert alert-danger" role="alert">';
+        echo Yii::$app->session->getFlash('error');
+        echo "</div>";
+     }
+    ?>
 
     <div class="container">
         <div class="panel panel-default">
@@ -74,6 +89,11 @@ $this->title = 'Prehľad skupiny | BP Mailer';
         </div>
 
         <h3>Zoznam adries</h3>
+        <?php
+            echo LinkPager::widget([
+                'pagination' => $pagination,
+            ]);
+        ?>
         <table class="table table-striped table-hover">
         <thead>
           <tr>
@@ -85,13 +105,13 @@ $this->title = 'Prehľad skupiny | BP Mailer';
         <?php
           echo "<tbody>";
           $count = 1;
+          $request = Yii::$app->request;
+          $pageNumber = $request->get('page', 1);
+          if ($pageNumber == 0) {$pageNumber = 1;}
           foreach ($addresses as $key => $value) {
             echo "<tr>";
-            echo "<td>" . $count . "</td>";
-            echo "<td>" . $key . "</td>";
-            /*echo '<td><a class="btn btn-danger" href="' 
-                . Url::to(['group/delete', 'groupid' => $value['group_id'], 'emailid' => $value['email_id'] ]) . 
-                '" role="button">Odstrániť</a></td>';*/
+            echo "<td>" . ($count + 20*($pageNumber-1)) . "</td>";
+            echo "<td>" . $value['emails']['email'] . "</td>";
             echo '<td>' . Html::a('Odstrániť', 
                                 ['group/delete/' . $value['group_id'] . '/' . $value['email_id']], 
                                 ['class' => 'btn btn-danger', 'role' => 'button']) . '</td>';    
