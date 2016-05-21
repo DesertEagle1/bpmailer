@@ -30,8 +30,8 @@ $config = [
             /*'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.gmail.com',
-                'username' => 'p.gubik@gmail.com',
-                'password' => 'Agbdlcid',
+                'username' => '***',
+                'password' => '***',
                 'port' => '465',
                 'encryption' => 'ssl',
             ],*/
