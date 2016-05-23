@@ -4,6 +4,7 @@
 /* @var $model app\models\NewsletterForm */
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = 'Prehľad newslettera | BP Mailer';
 ?>
@@ -35,7 +36,7 @@ $this->title = 'Prehľad newslettera | BP Mailer';
       <ul>
 	      <?php
 	      foreach ($attachments as $key => $value) {
-	      	echo '<li><a href="files/' . $value['filename_hash'] . '">' . $value['filename'] . "</a></li>";
+	      	echo '<li><a href="' . Url::to(['files/' . $value['filename_hash']]) . '"</a>' . $value['filename'] .'</li>';
 	      }
 	      ?>
   	  </ul>

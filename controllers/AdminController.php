@@ -68,18 +68,14 @@ class AdminController extends Controller
 
     public function actionUsers()
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
         $allRights = AccessRights::getAllAccessRights();
 
         $usersIdList = User::getUsersIds();
 
-        if (in_array(1, $result)) {
+        if (in_array(1, $rights)) {
             return $this->render('users', array('allRights' => $allRights, 'usersIdList'=>$usersIdList));
         }
         return $this->render('error', array('name'=>'Nepovolený prístup', 'message'=>'Do tejto časti nemáte prístup!'));
@@ -87,14 +83,11 @@ class AdminController extends Controller
 
     public function actionLogs($page = 0)
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (in_array(1, $result)) {
+        if (in_array(1, $rights)) {
+            
             $query = Log::getLogs();
             $count = $query->count();
             $pagination = new Pagination(['totalCount' => $count]);
@@ -108,14 +101,10 @@ class AdminController extends Controller
 
     public function actionNewuser()
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (in_array(1, $result)) {
+        if (in_array(1, $rights)) {
 
             $model = new NewUserForm();
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
@@ -166,12 +155,8 @@ class AdminController extends Controller
 
     public function actionEdituser($id)
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
         $rights_id = AccessRights::getAccessRights($id);
         $accessRights = array();
@@ -191,7 +176,7 @@ class AdminController extends Controller
         }
         $username = $username->username;
 
-        if (in_array(1, $result)) {
+        if (in_array(1, $rights)) {
             $model = new EditUserForm();
             in_array(1, $accessRights) ? $model->admin = true : $model->admin = false;
             in_array(2, $accessRights) ? $model->newsletterAccess = true : $model->newsletterAccess = false;

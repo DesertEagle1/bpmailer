@@ -91,6 +91,23 @@ class Subscriber extends ActiveRecord
         return $result;
     }
 
+    public static function getSubscribersBetweenDates($from, $to){
+        $result = Subscriber::find()
+            ->where(['between', 'since', $from, $to])
+            ->count();
+
+        return $result;
+    }
+
+    public static function findToken($address, $groupId){
+        $token = Subscriber::find()
+                ->joinWith('emails')
+                ->where(['group_id' => $groupId,
+                        'emails.email' => $address])
+                ->one();
+        return $token->token;
+    }
+
     public function getEmails()
     {
         return $this->hasOne(SubscriberEmail::className(), ['id' => 'email_id']);

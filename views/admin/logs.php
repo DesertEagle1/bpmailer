@@ -9,11 +9,13 @@ $this->title = 'Logy | BP Mailer';
 <div class="site-index">
 
     <h1>Logy</h1>
+
     <?php
         echo LinkPager::widget([
             'pagination' => $pagination,
         ]);
     ?>
+    
     <div class="container">
       <table class="table table-striped table-hover">
         <thead>
@@ -47,14 +49,14 @@ $this->title = 'Logy | BP Mailer';
 
         		if ($activityId == 6){
         			$delimiter = strrpos($info, ",");
-        			$group = substr($info, $delimiter+1);
+        			$group = substr($info, 0, $delimiter);
         			$email = substr($info, $delimiter+1, strlen($info));
         			return 'Pridaný odberateľ <b>' . $email . '</b> do skupiny <b>' . $group . '</b>';
         		}
 
         		if ($activityId == 7){
         			$delimiter = strrpos($info, ",");
-        			$group = substr($info, $delimiter+1);
+        			$group = substr($info, 0, $delimiter);
         			$email = substr($info, $delimiter+1, strlen($info));
         			return 'Vymazaný odberateľ <b>' . $email . '</b> zo skupiny <b>' . $group . '</b>';
         		}

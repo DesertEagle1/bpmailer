@@ -8,13 +8,12 @@ use yii\helpers\Url;
 use app\models\NewsletterForm;
 use dosamigos\ckeditor\CKEditor;
 
-
-$this->title = 'Nový newsletter | BP Mailer';
+$this->title = 'Úprava newslettera | BP Mailer';
 ?>
 
 <div class="site-index">
 
-    <h1>Vytvorenie nového newslettera</h1>
+    <h1>Úprava newslettera</h1>
 
 
     <div class="body-content">
@@ -62,12 +61,20 @@ $this->title = 'Nový newsletter | BP Mailer';
             ])->label(false) ?>
           </div>
 
+          <ul>
+            <?php
+              foreach ($attachments as $key => $value) {
+                echo '<li><a href="' . Url::to(['files/' . $value['filename_hash']]) . '">' . $value['filename'] .'</a></li>' . "\n";
+              }
+            ?>
+          </ul>
+          
           <div class="form-group">
             <?= $form->field($modelUpload, 'attachments[]')->fileInput(['multiple' => true]) ?>
           </div>  
 
         <div class="form-group">
-            <?= Html::submitButton('Uložiť', ['class' => 'btn btn-primary', 'name' => 'editNewsletter-button']) ?>
+            <?= Html::submitButton('Uložiť', ['class' => 'btn btn-primary', 'name' => 'saveNewsletter-button']) ?>
         </div>
         <?php ActiveForm::end() ?>
     </div>

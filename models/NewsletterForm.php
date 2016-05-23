@@ -13,7 +13,7 @@ class NewsletterForm extends Model
     public $sentFrom;
     public $replyTo;
     public $template;
-    public $content = "here is some meaningless text";
+    public $content;
     public $attachment;
 
     /**

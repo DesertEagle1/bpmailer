@@ -74,14 +74,10 @@ class GroupController extends Controller
 
     public function actionNew()
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (!empty(array_intersect([1,3], $result))) {
+        if (!empty(array_intersect([1,3], $rights))) {
             $model = new NewGroupForm();
             if ($model->load(Yii::$app->request->post()) && $model->validate()){
                 $group = new Group();
@@ -144,14 +140,10 @@ class GroupController extends Controller
 
     public function actionAll()
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (!empty(array_intersect([1,3], $result))) {
+        if (!empty(array_intersect([1,3], $rights))) {
             $groups = Group::getAllGroups();
             return $this->render('all', array('groups' => $groups));
         }
@@ -161,14 +153,10 @@ class GroupController extends Controller
 
     public function actionShow($id, $page = 0)
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (!empty(array_intersect([1,3], $result))) {
+        if (!empty(array_intersect([1,3], $rights))) {
             $model = new SubscriberFormEmail();
             $groupInfo = Group::findGroupById($id);
 
@@ -204,6 +192,11 @@ class GroupController extends Controller
                     $subscriber = new Subscriber();
                     $subscriber->group_id = $id;
                     $subscriber->email_id = $emailId->id;
+                    $randomString = Yii::$app->getSecurity()->generateRandomString();
+                    while (Subscriber::find()->where(['token' => $randomString])->one()) {
+                        $randomString = Yii::$app->getSecurity()->generateRandomString();
+                    }
+                    $subscriber->token = $randomString;
                     $subscriber->save();
 
                     Log::writeLog(Yii::$app->user->id, 6, ($groupInfo->group_name . ',' . $model->emailAddress));
@@ -299,6 +292,11 @@ class GroupController extends Controller
                         $newEmailInGroup = new Subscriber();
                         $newEmailInGroup->group_id = $id;
                         $newEmailInGroup->email_id = $emailId;
+                        $randomString = Yii::$app->getSecurity()->generateRandomString();
+                        while (Subscriber::find()->where(['token' => $randomString])->one()) {
+                            $randomString = Yii::$app->getSecurity()->generateRandomString();
+                        }
+                        $newEmailInGroup->token = $randomString;
                         $newEmailInGroup->save();
                     }
                 }
@@ -325,6 +323,11 @@ class GroupController extends Controller
                         $newEmailInGroup = new Subscriber();
                         $newEmailInGroup->group_id = $id;
                         $newEmailInGroup->email_id = $emailId;
+                        $randomString = Yii::$app->getSecurity()->generateRandomString();
+                        while (Subscriber::find()->where(['token' => $randomString])->one()) {
+                            $randomString = Yii::$app->getSecurity()->generateRandomString();
+                        }
+                        $newEmailInGroup->token = $randomString;
                         $newEmailInGroup->save();
                     }
                 }
@@ -334,14 +337,10 @@ class GroupController extends Controller
 
     public function actionDelete($groupid, $emailid)
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (!empty(array_intersect([1,3], $result))) {
+        if (!empty(array_intersect([1,3], $rights))) {
             $model = new DeleteSubscriberForm();
 
             $subscriber = SubscriberEmail::findById($emailid);

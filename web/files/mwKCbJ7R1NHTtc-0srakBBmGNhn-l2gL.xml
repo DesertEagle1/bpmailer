@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<moldb>
+  <molecule>
+      <email>xml1@xml.com</email>
+      <symbol>ala</symbol>
+      <code>A</code>
+      <type>hydrophobic</type>
+  </molecule>
+
+  <molecule>
+      <email>xml2@xml.com</email>
+      <symbol>lys</symbol>
+      <code>K</code>
+      <type>charged</type>
+  </molecule>
+
+</moldb>

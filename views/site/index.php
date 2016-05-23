@@ -48,8 +48,7 @@ else
   {
   ?>
   <h1>Prehľad noviniek</h1>
-    <div class="jumbotron">
-      
+    <div class="jumbotron">     
       <div class="row">
         <div class="col-lg-6">
         <?php  
@@ -67,21 +66,26 @@ else
                     )));
         ?>
         </div>
-
         <div class="col-lg-6">
+        <?php  
+        echo GoogleChart::widget(array('visualization' => 'ColumnChart',
+                'data' => $columnChartData,
+                'options' => array(
+                    'title' => 'Odoslané newslettere za posledných 6 mesiacov',
+                    'legend' => 'none',
+                    )));
+        ?>
+        </div>
+      </div>
+      <div class="row">  
+        <div class="col-lg-12">
         <?php
         echo GoogleChart::widget(array('visualization' => 'LineChart',
-                'data' => array(
-                    array('Task', 'Hours per Day'),
-                    array('Work', 11),
-                    array('Eat', 2),
-                    array('Commute', 2),
-                    array('Watch TV', 2),
-                    array('Sleep', 7)
-                ),
+                'data' => $lineChartData,
                 'options' => array(
-                    'title' => 'My Daily Activity',
-                    'legend' => array('position' => 'bottom'),
+                    'title' => 'Noví odberatelia za posledných 6 mesiacov',
+                    'legend' => 'none',
+                    'pointsVisible' => true,
                 )));
         ?>
         </div>
@@ -110,7 +114,7 @@ else
                 echo '<td>' . $date . '</td>';
                 echo '<td>' . $value['subject'] . '</td>';
                 echo '<td>' . $value['subscribersCount'] . '</td>';
-                echo '<td>N/A</td>';
+                echo '<td>' . $value['successRate'] . '</td>';
                 echo "</tr>";
 
               }
@@ -122,8 +126,8 @@ else
       </div>
       <div class="col-lg-6">
         <h2>Dnešná aktivita (<?= date('d.n.Y') ?>)</h2>
-        
         <h3>Noví odberatelia</h3>
+
         <p>Dnes pribudlo <strong> <?= sizeof($todaySubscribers) ?></strong> nových odberateľov:
         <?php
           foreach ($todaySubscribers as $key => $value) {

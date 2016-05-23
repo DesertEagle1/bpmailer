@@ -23,6 +23,21 @@ class AccessRights extends ActiveRecord
         return $rights;
     }
 
+    public static function getAccessRightsForMenu($userID)
+    {
+        $rights = AccessRights::find()
+            ->select(['access_right_id'])
+            ->where(['user_id' => $userID])
+            ->all();
+
+        $result = array();
+        foreach ($rights as $key => $value) {
+             $result[] = $rights[$key]['access_right_id'];
+         } 
+
+        return $result;
+    }
+
     public static function getAllAccessRights()
     {
         $users = User::find()

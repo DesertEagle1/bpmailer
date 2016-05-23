@@ -37,13 +37,19 @@ $this->title = 'Newslettere | BP Mailer';
           foreach ($newsletters as $key => $value) {
             echo "<tr>";
             echo "<td>" . $count . "</td>";
-            echo '<td><a href="'. Url::to(['newsletter/show/', 'id' => $value['id']]) . '">' . $value['subject'] . "</a></td>";
+            if ($value['status'] == 'Uložený'){
+              echo '<td><a href="'. Url::to(['newsletter/edit/', 'id' => $value['id']]) . '">' . $value['subject'] . 
+              ' <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></td>';
+            }
+            else {
+              echo '<td><a href="'. Url::to(['newsletter/show/', 'id' => $value['id']]) . '">' . $value['subject'] . "</a></td>";
+            }            
             echo "<td>" . $value['status'] . "</td>";
             echo "<td>" . $value['created_at'] . "</td>";
             echo "<td>" . ($value['sent_at'] ? $value['sent_at'] : "N/A") . "</td>";
-            echo "<td>" . "N/A" . "</td>";
-            echo "<td>" . "N/A" . "</td>";
-            echo "<td>" . "N/A" . "</td>";
+            echo "<td>" . $value['successRate'] . "</td>";
+            echo "<td>" . ($value['open'] ? $value['open'] : "N/A") . "</td>";
+            echo "<td>" . ($value['clicks'] ? $value['clicks'] : "N/A") . "</td>";
             echo "<td>" . "N/A" . "</td>";
             if ($value['status'] == 'Uložený'){
               echo '<td><a class="btn btn-primary" href="' . Url::to(['newsletter/send/', 'id' => $value['id']]) . '" role="button">Odoslať</a></td>';

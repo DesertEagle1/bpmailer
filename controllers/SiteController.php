@@ -59,19 +59,39 @@ class SiteController extends Controller
             return $this->goBack();
         }
           
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
         $newsletters = Newsletter::getAllNewsletters();
         $newsletters = array_slice($newsletters, 0, 3);
         $todaySubscribers = array_unique(Subscriber::getTodaySubscribers());
 
+        $lineChartData = array(array('Mesiac', 'Noví odberatelia'),
+                               array('December 2015', 55),
+                               array('January 2016', 79),
+                               array('February 2016', 101),
+                               array('March 2016', 90),
+                               array('April 2016', 87),
+                               array('May 2016', 61),
+                               );
+        /*for ($i=5; $i >= 0; $i--) { 
+            $from = date('Y-m-01', strtotime(date('Y-m-d') . "-" . $i . " months"));
+            $to = date('Y-m-t', strtotime(date('Y-m-d') . "-" . $i . " months"));;
+            $lineChartData[] = array(date('F Y',strtotime($from)), 
+                                     intval(Subscriber::getSubscribersBetweenDates($from, $to))); 
+        }*/
+
+        $columnChartData = array(array('Mesiac', 'Odoslané newslettere'));
+        for ($i=5; $i >= 0; $i--) { 
+            $from = date('Y-m-01', strtotime(date('Y-m-d') . "-" . $i . " months"));
+            $to = date('Y-m-t', strtotime(date('Y-m-d') . "-" . $i . " months"));;
+            $columnChartData[] = array(date('F Y',strtotime($from)), 
+                                     intval(Newsletter::getNewslettersBetweenDates($from, $to))); 
+        }
+
         return $this->render('index', array('model'=>$model, 'newsletters' => $newsletters, 
-                                            'todaySubscribers' => $todaySubscribers));
+                                            'todaySubscribers' => $todaySubscribers, 'lineChartData' => $lineChartData,
+                                            'columnChartData' => $columnChartData));
         
     }
 
@@ -89,12 +109,8 @@ class SiteController extends Controller
 
     public function actionChangepassword()
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
         
         if (!\Yii::$app->user->isGuest){
             $model = new ChangePasswordForm();

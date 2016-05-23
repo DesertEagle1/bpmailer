@@ -66,14 +66,10 @@ class TemplateController extends Controller
 
     public function actionNew()
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (!empty(array_intersect([1,4], $result))) {
+        if (!empty(array_intersect([1,4], $rights))) {
             $model = new NewTemplateForm();
             if ($model->load(Yii::$app->request->post()) && $model->validate()){
                 $template = new Template();
@@ -91,14 +87,10 @@ class TemplateController extends Controller
 
     public function actionAll()
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (!empty(array_intersect([1,4], $result))) {
+        if (!empty(array_intersect([1,4], $rights))) {
             $templates = Template::find()->all();
             return $this->render('all', array('templates' => $templates));
         }
@@ -108,14 +100,10 @@ class TemplateController extends Controller
 
     public function actionShow($id)
     {
-        $rights = AccessRights::getAccessRights(Yii::$app->user->id);
-        $result = array();
-        foreach ($rights as $key => $value) {
-             $result[] = $rights[$key]['access_right_id'];
-         } 
-        Yii::$app->view->params['accessRightsArray'] = $result;
+        $rights = AccessRights::getAccessRightsForMenu(Yii::$app->user->id);
+        Yii::$app->view->params['accessRightsArray'] = $rights;
 
-        if (!empty(array_intersect([1,4], $result))) {
+        if (!empty(array_intersect([1,4], $rights))) {
             $template = Template::findOne(['id' => $id]);
             
             if ($template === null){
